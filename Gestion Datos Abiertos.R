@@ -10,6 +10,7 @@
 
 library(UnalData)
 library(tidyverse)
+library(writexl)
 
 ##%######################################################%##
 #                                                          #
@@ -109,7 +110,7 @@ if(sum(complete.cases(Aspirantes))== nrow(Aspirantes)) {
 
 Matriculados <- UnalData::Matriculados %>% 
                 filter(YEAR >= 2019) %>% 
-                select(-c(ID, TID, CAT_EDAD, ESTRATO, PBM, DISCAPACIDAD, 
+                select(-c(ID, TID, NOMBRE, CAT_EDAD, ESTRATO, PBM, DISCAPACIDAD, 
                           TIPO_DISC, SNIESU_CONVENIO, U_CONVENIO, FACULTAD_S, 
                           PROGRAMA_S)) %>%                 
                  rename(EDAD = EDAD_MOD, ESTRATO = ESTRATO_ORIG, 
@@ -146,7 +147,6 @@ Matriculados <- UnalData::Matriculados %>%
                         CD_CINE = ifelse(is.na(CD_CINE), -89, CD_CINE),
                         AREA_CINE = ifelse(AREA_CINE == "Ingeniería, Industria y Construcción", "Ingeniería, industria y construcción", AREA_CINE),
                         AREA_CINE = ifelse(is.na(AREA_CINE), "Sin información", AREA_CINE))
-
 
 # Revisar completitud de la base de datos
 
@@ -250,6 +250,11 @@ if(sum(complete.cases(Administrativos))== nrow(Administrativos)) {
 } else {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
+
+# Base de datos a publicar
+
+write_xlsx(Administrativos, "Datos/Administrativos.xlsx")
+
 
 ##%######################################################%##
 #                                                          #
