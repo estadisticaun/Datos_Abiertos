@@ -308,4 +308,4 @@ if(sum(complete.cases(SaberPro))== nrow(SaberPro)) {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
 
-
+View(UnalData::Docentes %>% filter(YEAR >= 2018))
