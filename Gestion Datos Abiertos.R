@@ -11,6 +11,7 @@
 library(UnalData)
 library(tidyverse)
 library(writexl)
+library(openxlsx)
 
 ##%######################################################%##
 #                                                          #
@@ -241,7 +242,8 @@ Administrativos <- UnalData::Administrativos %>%
   filter(YEAR >= 2018) %>% 
   select(-c(ID, CAT_EDAD, CAT_SERVICIO))%>% 
   mutate(across(.cols = where(is.numeric), .fns = ~ifelse(is.na(.x), -89, .x)),
-         across(.cols = where(is.character), .fns = ~ifelse(is.na(.x), "Sin información", .x))) 
+         across(.cols = where(is.character), .fns = ~ifelse(is.na(.x), "Sin información", .x))) %>% 
+  arrange(desc(YEAR), desc(SEMESTRE))
 
 # Revisar completitud de la base de datos
 
@@ -308,4 +310,4 @@ if(sum(complete.cases(SaberPro))== nrow(SaberPro)) {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
 
-View(UnalData::Docentes %>% filter(YEAR >= 2018))
+
