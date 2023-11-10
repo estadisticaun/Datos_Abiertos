@@ -55,10 +55,13 @@ Aspirantes <- UnalData::Aspirantes %>%
                             .fns = ~ifelse(is.na(.x), -89, .x)),
                      across(.cols = c(DEP_NAC, CIU_NAC, DEP_RES, CIU_RES),
                             .fns = ~ifelse(is.na(.x), "Sin información", .x)),
-                     CODS_NAC = ifelse(is.na(CODS_NAC), "Sin información", CODS_NAC),
+                     CODS_NAC = ifelse(is.na(CODS_NAC), "Sin información", CODS_NAC),                     # Transformación de datos 
                      CODN_NAC = ifelse(is.na(CODN_NAC), -89, CODN_NAC),
                      NACIONALIDAD = ifelse(NACIONALIDAD == "Colombiana\r\n", "Colombiana", NACIONALIDAD),
-                     INS_SEDE_NOMBRE = ifelse(is.na(INS_SEDE_NOMBRE), "Universidad", INS_SEDE_NOMBRE),   # Transformación de datos 
+                     INS_SEDE_NOMBRE = ifelse(is.na(INS_SEDE_NOMBRE), "Universidad", INS_SEDE_NOMBRE),  
+                     MOD_INS = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & INS_SEDE_NOMBRE == "De La Paz", "Regular", MOD_INS),
+                     TIPO_INS = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & INS_SEDE_NOMBRE == "De La Paz", "Regular", TIPO_INS),
+                     PAES = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & INS_SEDE_NOMBRE == "De La Paz", NA, PAES),
                      SNIES_SEDE = ifelse(YEAR == 2021 & SEMESTRE == 2 & INS_SEDE_NOMBRE == "Universidad", NA, SNIES_SEDE),
                      SNIES_SEDE = ifelse(INS_SEDE_NOMBRE == "Bogotá", 1101, SNIES_SEDE),
                      SNIES_SEDE = ifelse(INS_SEDE_NOMBRE == "Medellín", 1102, SNIES_SEDE),
@@ -93,14 +96,16 @@ Aspirantes <- UnalData::Aspirantes %>%
 
 
 # Revisar completitud de la base de datos
-# 
-# Aspirantes <- Aspirantes %>% select(-(DEP_NAC:LAT_CIU_RES))
 
 if(sum(complete.cases(Aspirantes))== nrow(Aspirantes)) {
   message("¡Base Completa! \nNo existen campos vacios")
 } else {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
+
+# Base de datos a publicar
+
+write_xlsx(Aspirantes, "Datos/Aspirantes.xlsx")
 
 ##%######################################################%##
 #                                                          #
@@ -120,6 +125,9 @@ Matriculados <- UnalData::Matriculados %>%
                                .fns = ~ifelse(is.na(.x), -89, .x)),
                         across(.cols = c(DEP_NAC, CIU_NAC, DEP_PROC, CIU_PROC),
                                .fns = ~ifelse(is.na(.x), "Sin información", .x)),
+                        MOD_ADM = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & SEDE_NOMBRE_MAT == "De La Paz", "Regular", MOD_ADM),
+                        TIPO_ADM = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & SEDE_NOMBRE_MAT == "De La Paz", "Regular", TIPO_ADM),
+                        PAES = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & SEDE_NOMBRE_MAT == "De La Paz", NA, PAES),
                         CODS_NAC = ifelse(is.na(CODS_NAC), "Sin información", CODS_NAC),
                         CODN_NAC = ifelse(is.na(CODN_NAC), -89, CODN_NAC),
                         NACIONALIDAD = ifelse(is.na(NACIONALIDAD), "Sin información", NACIONALIDAD),
@@ -128,6 +136,9 @@ Matriculados <- UnalData::Matriculados %>%
                         TIPO_COL = ifelse(is.na(TIPO_COL), "Sin información", TIPO_COL),
                         PBM = ifelse(TIPO_NIVEL == "Postgrado", -88, PBM),
                         PBM = ifelse(is.na(PBM), -89, PBM),
+                        MOD_ADM = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & SEDE_NOMBRE_ADM == "De La Paz", "Regular", MOD_ADM),
+                        TIPO_ADM = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & SEDE_NOMBRE_ADM == "De La Paz", "Regular", TIPO_ADM),
+                        PAES = ifelse(YEAR <= 2022 & TIPO_NIVEL == "Pregrado" & SEDE_NOMBRE_ADM == "De La Paz", NA, PAES),
                         PAES = ifelse(TIPO_ADM == "PAES" & is.na(PAES), "Sin información", PAES),
                         PAES = ifelse(TIPO_ADM != "PAES", "No aplica", PAES),
                         PEAMA = ifelse(TIPO_ADM == "PEAMA" & is.na(PEAMA), "Sin información", PEAMA),
@@ -156,6 +167,10 @@ if(sum(complete.cases(Matriculados))== nrow(Matriculados)) {
 } else {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
+
+# Base de datos a publicar
+
+write_xlsx(Matriculados, "Datos/Matriculados.xlsx")
 
 ##%######################################################%##
 #                                                          #
@@ -211,6 +226,11 @@ if(sum(complete.cases(Graduados))== nrow(Graduados)) {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
    
+# Base de datos a publicar
+
+write_xlsx(Graduados, "Datos/Graduados.xlsx")
+
+
 ##%######################################################%##
 #                                                          #
 ####                Pob 5. Docentes ----                ####
@@ -231,6 +251,11 @@ if(sum(complete.cases(Docentes))== nrow(Docentes)) {
 } else {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
+
+# Base de datos a publicar
+
+write_xlsx(Docentes, "Datos/Docentes.xlsx")
+
 
 ##%######################################################%##
 #                                                          #
