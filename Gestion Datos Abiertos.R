@@ -252,7 +252,12 @@ if(sum(complete.cases(Docentes))== nrow(Docentes)) {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
 
-# Base de datos a publicar
+# Base de datos a publicar - Último Periodo
+
+Docentes_UP <- Docentes %>% filter(YEAR == 2023, SEMESTRE == 2)
+write_xlsx(Docentes_UP, "Datos/Docentes_UP.xlsx")
+
+# Base de datos a publicar - Toda la Base de Datos
 
 write_xlsx(Docentes, "Datos/Docentes.xlsx")
 
