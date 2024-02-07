@@ -288,7 +288,13 @@ if(sum(complete.cases(Administrativos))== nrow(Administrativos)) {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
 
-# Base de datos a publicar
+# Base de datos a publicar - Último Periodo
+
+Administrativos_UP <- Administrativos %>% filter(YEAR == 2023, SEMESTRE == 2)
+write_xlsx(Administrativos_UP, "Datos/Administrativos_UP.xlsx")
+
+
+# Base de datos a publicar - Toda la Base de Datos
 
 write_xlsx(Administrativos, "Datos/Administrativos.xlsx")
 
