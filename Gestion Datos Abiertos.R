@@ -168,7 +168,12 @@ if(sum(complete.cases(Matriculados))== nrow(Matriculados)) {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
 
-# Base de datos a publicar
+# Base de datos a publicar - Último Periodo
+
+Matriculados_UP <- Matriculados %>% filter(YEAR == 2023, SEMESTRE == 2)
+write_xlsx(Matriculados_UP, "Datos/Matriculados_UP.xlsx")
+
+# Base de datos a publicar General
 
 write_xlsx(Matriculados, "Datos/Matriculados.xlsx")
 
