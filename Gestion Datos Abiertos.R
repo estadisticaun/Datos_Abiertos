@@ -311,12 +311,13 @@ write_xlsx(Administrativos, "Datos/Administrativos.xlsx")
 ##%######################################################%##
 
 SaberPro <- UnalData::SaberPro %>% 
-  filter(YEAR >= 2019) %>% 
-  select(-c(ID, TID, SEMESTRE:SEMESTRE_MAT, TIPO_NIVEL, CAT_EDAD, ESTRATO, PBM, 
-            ADM_PEAMA_ANDINA, FACULTAD_S, PROGRAMA_S, SNP)) %>% 
+  filter(YEAR >= 2018) %>% 
+  select(-c(ID, TID, NIVEL, SEMESTRE:SEMESTRE_MAT, TIPO_NIVEL, CAT_EDAD, ESTRATO, PBM, 
+            ADM_PEAMA_ANDINA, FACULTAD_S, PROGRAMA_S, SNP, PBM_2, PROGRAMA, ESTADO)) %>% 
   rename(EDAD = EDAD_MOD, ESTRATO = ESTRATO_ORIG, 
          PBM = PBM_ORIG, SEDE_ADMISION = SEDE_NOMBRE_ADM, 
-         SEDE_FINALIZACION =SEDE_NOMBRE_MAT) %>% 
+         SEDE_FINALIZACION =SEDE_NOMBRE_MAT,
+         PROGRAMA = PROGRAMA_2) %>% 
   mutate(across(.cols = c(COD_DEP_NAC, COD_CIU_NAC:LAT_CIU_NAC, COD_DEP_PROC, COD_CIU_PROC:LAT_CIU_PROC),
                 .fns = ~ifelse(is.na(.x), -89, .x)),
          across(.cols = c(DEP_NAC, CIU_NAC, DEP_PROC, CIU_PROC),
@@ -346,7 +347,10 @@ SaberPro <- UnalData::SaberPro %>%
          across(.cols = starts_with("PUNT"),
                 .fns = ~ifelse(is.na(.x), -89, .x)),
          across(.cols = starts_with("NIVEL"),
-                .fns = ~ifelse(is.na(.x), "Sin información", .x)))
+                .fns = ~ifelse(is.na(.x), "Sin información", .x))) %>% 
+   relocate(COD_PADRE, .before = SNIES_PROGRA) %>% 
+   relocate(PROGRAMA, .before = AREAC_SNIES) %>% 
+   relocate(PBM, .before = SNIES_SEDE_ADM)
 
 # Revisar completitud de la base de datos
 
@@ -355,5 +359,9 @@ if(sum(complete.cases(SaberPro))== nrow(SaberPro)) {
 } else {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
+
+# Base de datos a publicar - Toda la Base de Datos
+
+write_xlsx(SaberPro, "Datos/SaberPro.xlsx")
 
 
