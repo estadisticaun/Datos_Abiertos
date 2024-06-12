@@ -48,7 +48,7 @@ Aspirantes <- UnalData::Aspirantes %>%
                      (YEAR >= 2019 & TIPO_NIVEL == "Pregrado" & !is.na(TIPO_INS))) %>% 
               select(-c(ID, TIPO_DOC, NOMBRE, CAT_EDAD, ESTRATO, ADM_SEDE_NOMBRE: FACULTAD_S, 
                         PROGRAMA_S, `SNIES UNIVERSIDAD`:TITULOUNIVERSITARIO, 
-                        AÑO_TERMINACION)) %>% 
+                        AÑO_TERMINACION, COD_PADRE:ESTADO, YEARSEMESTRE)) %>% 
               rename(EDAD = EDAD_MOD, ESTRATO = ESTRATO_ORIG) %>% 
               relocate(c(TIPO_NIVEL, NIVEL), .after = SEMESTRE) %>% 
               mutate(across(.cols = c(COD_DEP_NAC, COD_CIU_NAC:LAT_CIU_NAC, COD_DEP_RES, COD_CIU_RES:LAT_CIU_RES),
@@ -75,6 +75,7 @@ Aspirantes <- UnalData::Aspirantes %>%
                      TIPO_DISC = ifelse(is.na(TIPO_DISC), "No aplica", TIPO_DISC),
                      PAES = ifelse(is.na(PAES), "No aplica", PAES),
                      PEAMA = ifelse(is.na(PEAMA), "No aplica", PEAMA),
+                     PAET = ifelse(is.na(PAET), "No aplica", PAET),
                      SNIES_SEDE = ifelse(is.na(SNIES_SEDE), -88, SNIES_SEDE),
                      PTOTAL = ifelse(is.na(PTOTAL), -89, PTOTAL),
                      SNIES_PROGRA = ifelse(TIPO_NIVEL == "Pregrado" & ADMITIDO == "No", -88, SNIES_PROGRA),
@@ -94,7 +95,6 @@ Aspirantes <- UnalData::Aspirantes %>%
                      RANGO_ANO_TERMINACION = ifelse(TIPO_NIVEL == "Pregrado", "No aplica", RANGO_ANO_TERMINACION),
                      RANGO_ANO_TERMINACION = ifelse(is.na(RANGO_ANO_TERMINACION), "Sin información", RANGO_ANO_TERMINACION))
 
-
 # Revisar completitud de la base de datos
 
 if(sum(complete.cases(Aspirantes))== nrow(Aspirantes)) {
@@ -103,7 +103,13 @@ if(sum(complete.cases(Aspirantes))== nrow(Aspirantes)) {
   warning("¡Base incompleta! \nAlgunas variables tienen datos faltantes")
 }
 
-# Base de datos a publicar
+
+# Base de datos a publicar - Último Periodo
+
+Aspirantes_UP <- Aspirantes %>% filter(YEAR == 2024, SEMESTRE == 1)
+write_xlsx(Aspirantes_UP, "Datos/Aspirantes_UP.xlsx")
+
+# Base de datos a publicar General
 
 write_xlsx(Aspirantes, "Datos/Aspirantes.xlsx")
 
